@@ -25,8 +25,9 @@ export const registerUser = async (req, res) => {
       service: "gmail",
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
     });
+    const FRONTEND_URL = process.env.FRONTEND_URL;
+    const verifyURL = `${FRONTEND_URL}/verify-email/${verifyToken}`;
 
-    const verifyURL = `http://localhost:5173/verify-email/${verifyToken}`;
     await transporter.sendMail({
       from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -87,7 +88,7 @@ export const forgotPassword = async (req, res) => {
     });
     console.log("Transporter created");
 
-    const resetURL = `http://localhost:5173/reset-password/${resetToken}`;
+    const resetURL  = `${FRONTEND_URL}/reset-password/${resetToken}`;
     console.log("Sending email...");
 
     await transporter.sendMail({
