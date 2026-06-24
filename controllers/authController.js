@@ -15,11 +15,12 @@ const transporter = nodemailer.createTransport({
 
 // REGISTER
 export const registerUser = async (req, res) => {
-  console.log("Starting registration");
-console.log("Email:", email);
-console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+  
   try {
     const { username, email, password } = req.body;
+    console.log("Starting registration");
+    console.log("Email:", email);
+    console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
 
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
