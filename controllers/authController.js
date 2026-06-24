@@ -25,9 +25,9 @@ export const registerUser = async (req, res) => {
 
     const verifyURL = `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
 
-const data = await resend.emails.send({
+const { data, error } = await resend.emails.send({
   from: "ForgeMobile <onboarding@resend.dev>",
-  to: "support.forgemobile@gmail.com",
+  to: email,
   subject: "Verify Your Account",
   html: `
     <div style="font-family: Arial; padding:20px;">
@@ -91,7 +91,7 @@ export const forgotPassword = async (req, res) => {
 
     const data = await resend.emails.send({
   from: "ForgeMobile <onboarding@resend.dev>",
-  to: "support.forgemobile@gmail.com",
+  to: user.email,
   subject: "ForgeMobile Password Reset",
   html: `
     <div style="font-family: Arial; padding:20px;">
