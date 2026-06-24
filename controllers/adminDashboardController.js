@@ -25,7 +25,7 @@ export const getAllUsers = async (req, res) => {
     const usersWithBuilds = await Promise.all(
       users.map(async (user) => {
         const buildCount = await Build.countDocuments({
-          user: user._id
+          userId: user._id
         });
 
         return {
