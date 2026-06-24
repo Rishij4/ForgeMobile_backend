@@ -47,7 +47,9 @@ export const getAllUsers = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
-    if (req.user._id.toString() === id) {
+
+    // ✅ FIX HERE
+    if (req.user.id === id) {
       return res.status(400).json({
         message: "You cannot delete your own admin account"
       });
@@ -56,7 +58,7 @@ export const deleteUser = async (req, res) => {
     await User.findByIdAndDelete(id);
 
     await Build.deleteMany({
-     userId: id
+      userId: id
     });
 
     res.json({
@@ -64,6 +66,7 @@ export const deleteUser = async (req, res) => {
     });
 
   } catch (error) {
+    console.log("DELETE ERROR:", error);
     res.status(500).json({
       message: error.message
     });
