@@ -7,8 +7,8 @@ import nodemailer from "nodemailer";
 // BREVO SMTP TRANSPORTER
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.BREVO_USER,
     pass: process.env.BREVO_PASS,
@@ -61,7 +61,7 @@ export const registerUser = async (req, res) => {
       
       console.log("SMTP VERIFIED");
       await transporter.sendMail({
-        from: `"ForgeMobile" <${process.env.BREVO_USER}>`,
+        from: '"ForgeMobile" <support.forgemobile@gmail.com>',
         to: email,
         subject: "Verify Your ForgeMobile Account",
         html: `
@@ -167,7 +167,7 @@ export const forgotPassword = async (req, res) => {
       `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
     await transporter.sendMail({
-      from: `"ForgeMobile" <${process.env.BREVO_USER}>`,
+      from: '"ForgeMobile" <support.forgemobile@gmail.com>',
       to: email,
       subject: "ForgeMobile Password Reset",
       html: `
