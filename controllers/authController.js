@@ -18,31 +18,25 @@ const transporter = nodemailer.createTransport({
 // REGISTER
 export const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    console.log("STEP 1: Request reached backend");
 
-    console.log("Starting registration");
-    console.log("Email:", email);
+    const { username, email, password } = req.body;
+    console.log("STEP 2:", username, email);
 
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     });
-
-    if (existingUser) {
-      if (existingUser.email === email) {
-        return res.status(400).json({ message: "Email already exists" });
-      }
-      if (existingUser.username === username) {
-        return res.status(400).json({ message: "Username already exists" });
-      }
-    }
+    console.log("STEP 3: Checked existing user");
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("STEP 4: Password hashed");
 
     const verifyToken = jwt.sign(
       { email },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
+    console.log("STEP 5: JWT created");
 
     const newUser = new User({
       username,
@@ -52,50 +46,25 @@ export const registerUser = async (req, res) => {
     });
 
     await newUser.save();
+    console.log("STEP 6: User saved to MongoDB");
 
-    const verifyURL =
-      `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
-
-    console.log("Sending verification email...");
-
-    // 🔥 NON-BLOCKING EMAIL (IMPORTANT FIX)
-    let emailStatus = "sent";
-
-    try {
-      await transporter.sendMail({
-        from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: "Verify Your ForgeMobile Account",
-        html: `
-          <div style="font-family: Arial; padding:20px;">
-            <h2 style="color:#4F46E5;">Welcome to ForgeMobile</h2>
-
-            <p>Please verify your account.</p>
-
-            <a href="${verifyURL}"
-            style="background:#4F46E5;color:white;padding:12px 20px;
-            text-decoration:none;border-radius:6px;display:inline-block;">
-            Verify Account
-            </a>
-
-            <p>This link expires in 24 hours.</p>
-          </div>
-        `,
-      });
-
-      console.log("Verification email sent");
-    } catch (err) {
-      console.log("EMAIL ERROR:", err.message);
-      emailStatus = "failed";
-    }
+    // COMMENT EMAIL TEMPORARILY
+    /*
+    await transporter.sendMail({
+      from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Test",
+      html: `<p>Test</p>`,
+    });
+    console.log("STEP 7: Email sent");
+    */
 
     return res.status(201).json({
-      message: "User registered successfully",
-      emailStatus,
+      message: "Registration successful WITHOUT EMAIL",
     });
 
   } catch (error) {
-    console.log("REGISTER ERROR:", error);
+    console.log("REGISTER CRASH:", error);
     return res.status(500).json({
       message: error.message,
     });
