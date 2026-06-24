@@ -56,7 +56,7 @@ export const deleteUser = async (req, res) => {
     await User.findByIdAndDelete(id);
 
     await Build.deleteMany({
-      user: id
+     userId: id
     });
 
     res.json({
