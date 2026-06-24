@@ -42,6 +42,7 @@ const data = await resend.emails.send({
       <p>Link expires in 24 hours.</p>
     </div>`
 });
+    console.log("Resend response:", data);
     console.log("✅ Email sent successfully");
 
     res.status(201).json({ message: "Registered. Check your email." });
@@ -104,6 +105,7 @@ export const forgotPassword = async (req, res) => {
       <p>Link expires in 1 hour.</p>
     </div>`
 });
+    console.log("Resend response:", data);
 
     res.json({ message: "Reset link sent" });
   } catch (error) {
