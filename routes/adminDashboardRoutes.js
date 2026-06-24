@@ -12,6 +12,11 @@ router.get("/stats", getAdminStats);
 
 router.get("/users", getAllUsers);
 
-router.delete("/users/:id", deleteUser);
+router.delete(
+  "/users/:id",
+  authMiddleware,
+  adminMiddleware,
+  deleteUser
+);
 
 export default router;
