@@ -54,6 +54,7 @@ export const registerUser = async (req, res) => {
 
     // SEND VERIFY EMAIL
     try {
+      console.log("STEP 1 user saved");
       await transporter.sendMail({
         from: `"ForgeMobile" <${process.env.BREVO_USER}>`,
         to: email,
@@ -77,6 +78,7 @@ export const registerUser = async (req, res) => {
           </div>
         `,
       });
+      console.log("STEP 2 mail sent");
 
       console.log("Verification email sent");
     } catch (emailError) {
