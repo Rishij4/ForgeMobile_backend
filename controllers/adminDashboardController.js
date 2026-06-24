@@ -48,10 +48,10 @@ export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // ✅ FIX HERE
-    if (req.user.id === id) {
-      return res.status(400).json({
-        message: "You cannot delete your own admin account"
+    // ✅ SAFE CHECK (IMPORTANT)
+    if (!req.user || req.user.id === id) {
+      return res.status(403).json({
+        message: "Not allowed"
       });
     }
 
