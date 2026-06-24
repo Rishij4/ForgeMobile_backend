@@ -7,8 +7,8 @@ import nodemailer from "nodemailer";
 // BREVO SMTP TRANSPORTER
 const transporter = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
-  port: 465,
-  secure: true,
+  port: 2525,
+  secure: false,
   auth: {
     user: process.env.BREVO_USER,
     pass: process.env.BREVO_PASS,
@@ -55,11 +55,7 @@ export const registerUser = async (req, res) => {
     // SEND VERIFY EMAIL
     try {
       console.log("STEP 1 user saved");
-      console.log("Checking SMTP...");
-      
-      await transporter.verify();
-      
-      console.log("SMTP VERIFIED");
+      console.log("Sending mail directly...");
       await transporter.sendMail({
         from: '"ForgeMobile" <support.forgemobile@gmail.com>',
         to: email,
