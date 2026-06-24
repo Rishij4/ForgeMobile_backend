@@ -20,11 +20,14 @@ export const registerUser = async (req, res) => {
 
     const newUser = new User({ username, email, password: hashedPassword, isVerified: false });
     await newUser.save();
+    console.log("✅ User saved in MongoDB");
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
     });
+    console.log("✅ Transporter created");
+    console.log("⏳ About to send verification email...");
     const FRONTEND_URL = process.env.FRONTEND_URL;
     const verifyURL = `${FRONTEND_URL}/verify-email/${verifyToken}`;
 
@@ -44,9 +47,11 @@ export const registerUser = async (req, res) => {
           <p>Link expires in 24 hours.</p>
         </div>`
     });
+    console.log("✅ Email sent successfully");
 
     res.status(201).json({ message: "Registered. Check your email." });
   } catch (error) {
+    console.log("❌ REGISTER ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
