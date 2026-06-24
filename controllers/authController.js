@@ -2,13 +2,18 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import * as SibApiV3Sdk from "@getbrevo/brevo";
+import nodemailer from "nodemailer";
 
-// BREVO CONFIG
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-const apiKey = apiInstance.authentications["apiKey"];
-apiKey.apiKey = process.env.BREVO_API_KEY;
-
+// BREVO SMTP TRANSPORTER
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_PASS,
+  },
+});
 
 // REGISTER
 export const registerUser = async (req, res) => {
@@ -45,30 +50,19 @@ export const registerUser = async (req, res) => {
 
     await newUser.save();
 
-    const verifyURL =
-      `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
+    const verifyURL = `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
 
-    // SEND EMAIL WITH BREVO
+    // SEND VERIFY EMAIL
     try {
-      await apiInstance.sendTransacEmail({
-        sender: {
-          name: "ForgeMobile",
-          email: "support.forgemobile@gmail.com"
-        },
-
-        to: [
-          {
-            email: email
-          }
-        ],
-
+      await transporter.sendMail({
+        from: `"ForgeMobile" <${process.env.BREVO_USER}>`,
+        to: email,
         subject: "Verify Your ForgeMobile Account",
-
-        htmlContent: `
+        html: `
           <div style="font-family: Arial; padding:20px;">
             <h2 style="color:#4F46E5;">Welcome to ForgeMobile</h2>
 
-            <p>Please verify your account.</p>
+            <p>Please verify your account to continue.</p>
 
             <a href="${verifyURL}"
             style="background:#4F46E5;color:white;padding:12px 20px;
@@ -77,28 +71,29 @@ export const registerUser = async (req, res) => {
             </a>
 
             <p>This link expires in 24 hours.</p>
+
+            <hr>
+            <small>ForgeMobile Team</small>
           </div>
-        `
+        `,
       });
 
       console.log("Verification email sent");
-
     } catch (emailError) {
-      console.log("BREVO ERROR:", emailError.message);
+      console.log("EMAIL ERROR:", emailError.message);
     }
 
     return res.status(201).json({
-      message: "Registered successfully. Check your email."
+      message: "Registered successfully. Check your email.",
     });
 
   } catch (error) {
     console.log("REGISTER ERROR:", error);
     return res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };
-
 
 // LOGIN
 export const loginUser = async (req, res) => {
@@ -109,13 +104,13 @@ export const loginUser = async (req, res) => {
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({
-        message: "Invalid credentials"
+        message: "Invalid credentials",
       });
     }
 
     if (!user.isVerified) {
       return res.status(400).json({
-        message: "Please verify email first"
+        message: "Please verify email first",
       });
     }
 
@@ -130,17 +125,16 @@ export const loginUser = async (req, res) => {
       user: {
         id: user._id,
         username: user.username,
-        email: user.email
-      }
+        email: user.email,
+      },
     });
 
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };
-
 
 // FORGOT PASSWORD
 export const forgotPassword = async (req, res) => {
@@ -151,39 +145,29 @@ export const forgotPassword = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "No account found"
+        message: "No account found",
       });
     }
 
-    const resetToken =
-      crypto.randomBytes(32).toString("hex");
+    const resetToken = crypto.randomBytes(32).toString("hex");
 
     user.resetToken = resetToken;
-    user.resetTokenExpire =
-      Date.now() + 3600000;
+    user.resetTokenExpire = Date.now() + 3600000; // 1 hour
 
     await user.save();
 
     const resetURL =
       `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    await apiInstance.sendTransacEmail({
-      sender: {
-        name: "ForgeMobile",
-        email: "support.forgemobile@gmail.com"
-      },
-
-      to: [
-        {
-          email: email
-        }
-      ],
-
+    await transporter.sendMail({
+      from: `"ForgeMobile" <${process.env.BREVO_USER}>`,
+      to: email,
       subject: "ForgeMobile Password Reset",
-
-      htmlContent: `
+      html: `
         <div style="font-family: Arial; padding:20px;">
-          <h2>Password Reset</h2>
+          <h2 style="color:#4F46E5;">Password Reset</h2>
+
+          <p>Click below to reset password.</p>
 
           <a href="${resetURL}"
           style="background:#4F46E5;color:white;padding:12px 20px;
@@ -192,22 +176,24 @@ export const forgotPassword = async (req, res) => {
           </a>
 
           <p>This link expires in 1 hour.</p>
+
+          <hr>
+          <small>ForgeMobile Team</small>
         </div>
-      `
+      `,
     });
 
     res.json({
-      message: "Reset link sent"
+      message: "Reset link sent",
     });
 
   } catch (error) {
     console.log("FORGOT PASSWORD ERROR:", error);
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };
-
 
 // RESET PASSWORD
 export const resetPassword = async (req, res) => {
@@ -218,18 +204,17 @@ export const resetPassword = async (req, res) => {
     const user = await User.findOne({
       resetToken: token,
       resetTokenExpire: {
-        $gt: Date.now()
+        $gt: Date.now(),
       },
     });
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid or expired token"
+        message: "Invalid or expired token",
       });
     }
 
-    user.password =
-      await bcrypt.hash(password, 10);
+    user.password = await bcrypt.hash(password, 10);
 
     user.resetToken = undefined;
     user.resetTokenExpire = undefined;
@@ -237,16 +222,15 @@ export const resetPassword = async (req, res) => {
     await user.save();
 
     res.json({
-      message: "Password reset successful"
+      message: "Password reset successful",
     });
 
   } catch (error) {
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
   }
 };
-
 
 // VERIFY EMAIL
 export const verifyEmail = async (req, res) => {
@@ -259,25 +243,26 @@ export const verifyEmail = async (req, res) => {
     );
 
     const user = await User.findOne({
-      email: decoded.email
+      email: decoded.email,
     });
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found"
+        message: "User not found",
       });
     }
 
     user.isVerified = true;
+
     await user.save();
 
     res.json({
-      message: "Email verified successfully"
+      message: "Email verified successfully",
     });
 
   } catch (error) {
     res.status(400).json({
-      message: "Invalid or expired link"
+      message: "Invalid or expired link",
     });
   }
 };
