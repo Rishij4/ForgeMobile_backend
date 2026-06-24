@@ -23,6 +23,7 @@ import compatibilityRoutes from "./routes/compatibilityRoutes.js";
 import buildRoutes from "./routes/buildRoutes.js";
 import presetRoutes from "./routes/presetRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
+import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -54,6 +55,7 @@ app.use("/api/compatibility", compatibilityRoutes);
 app.use("/api/builds", buildRoutes);
 app.use("/api/preset", presetRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/admin-dashboard", adminDashboardRoutes);
 
 // Database Connection & Server Initialization
 mongoose.connect(process.env.MONGO_URI)
