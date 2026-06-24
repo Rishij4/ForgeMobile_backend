@@ -1,9 +1,10 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import crypto from "crypto";
 
+const resend = new Resend(process.env.RESEND_API_KEY);
 // REGISTER
 export const registerUser = async (req, res) => {
   try {
@@ -22,50 +23,25 @@ export const registerUser = async (req, res) => {
     await newUser.save();
     console.log("✅ User saved in MongoDB");
 
-    const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  connectionTimeout: 15000,
-  greetingTimeout: 15000,
-  socketTimeout: 15000,
-  tls: {
-    rejectUnauthorized: false
-  }
+    const verifyURL = `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
+
+await resend.emails.send({
+  from: "ForgeMobile <onboarding@resend.dev>",
+  to: email,
+  subject: "Verify Your Account",
+  html: `
+    <div style="font-family: Arial; padding:20px;">
+      <h2 style="color:#4F46E5;">Welcome to ForgeMobile</h2>
+      <p>Please verify your account.</p>
+
+      <a href="${verifyURL}"
+      style="background:#4F46E5;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;">
+      Verify Account
+      </a>
+
+      <p>Link expires in 24 hours.</p>
+    </div>`
 });
-    console.log("✅ Transporter created");
-    console.log("⏳ About to send verification email...");
-    const FRONTEND_URL = process.env.FRONTEND_URL;
-    const verifyURL = `${FRONTEND_URL}/verify-email/${verifyToken}`;
-    console.log("Checking SMTP connection...");
-
-    try {
-      await transporter.verify();
-      console.log("✅ SMTP connection successful");
-    } catch (err) {
-      console.log("❌ SMTP VERIFY ERROR:", err);
-    }
-
-    await transporter.sendMail({
-      from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Verify Your Account",
-      html: `
-        <div style="font-family: Arial; padding:20px;">
-          <h2 style="color:#4F46E5;">Welcome to ForgeMobile</h2>
-          <p>Please verify your account.</p>
-          <p>Click the button below to continue:</p>
-          <a href="${verifyURL}" style="background:#4F46E5;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;">Verify Account</a>
-          <p style="margin-top:20px;">This link expires in 1 hour.</p>
-          <p>If you didn’t request this, ignore this email.</p>
-          <hr><small>ForgeMobile Support Team</small>
-          <p>Link expires in 24 hours.</p>
-        </div>`
-    });
     console.log("✅ Email sent successfully");
 
     res.status(201).json({ message: "Registered. Check your email." });
@@ -106,31 +82,28 @@ export const forgotPassword = async (req, res) => {
     user.resetTokenExpire = Date.now() + 3600000;
     await user.save();
 
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    });
-    console.log("Transporter created");
+  
     const FRONTEND_URL = process.env.FRONTEND_URL;
 
     const resetURL  = `${FRONTEND_URL}/reset-password/${resetToken}`;
     console.log("Sending email...");
 
-    await transporter.sendMail({
-      from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
-      to: user.email,
-      subject: "ForgeMobile Password Reset",
-      html: `
-        <div style="font-family: Arial; padding:20px;">
-          <h2 style="color:#4F46E5;">ForgeMobile Password Reset</h2>
-          <p>We received a request to reset your password.</p>
-          <p>Click the button below to continue:</p>
-          <a href="${resetURL}" style="background:#4F46E5;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;">Reset Password</a>
-          <p style="margin-top:20px;">This link expires in 1 hour.</p>
-          <p>If you didn’t request this, ignore this email.</p>
-          <hr><small>ForgeMobile Support Team</small>
-        </div>`
-    });
+    await resend.emails.send({
+  from: "ForgeMobile <onboarding@resend.dev>",
+  to: user.email,
+  subject: "ForgeMobile Password Reset",
+  html: `
+    <div style="font-family: Arial; padding:20px;">
+      <h2>Password Reset</h2>
+
+      <a href="${resetURL}"
+      style="background:#4F46E5;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;">
+      Reset Password
+      </a>
+
+      <p>Link expires in 1 hour.</p>
+    </div>`
+});
 
     res.json({ message: "Reset link sent" });
   } catch (error) {
