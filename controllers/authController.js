@@ -91,7 +91,7 @@ export const forgotPassword = async (req, res) => {
 
     const data = await resend.emails.send({
   from: "ForgeMobile <onboarding@resend.dev>",
-  to: "support.forgemobile@gmail.com"
+  to: "support.forgemobile@gmail.com",
   subject: "ForgeMobile Password Reset",
   html: `
     <div style="font-family: Arial; padding:20px;">
