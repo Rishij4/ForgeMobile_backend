@@ -27,7 +27,7 @@ export const registerUser = async (req, res) => {
 
 const data = await resend.emails.send({
   from: "ForgeMobile <onboarding@resend.dev>",
-  to: email,
+  to: "support.forgemobile@gmail.com",
   subject: "Verify Your Account",
   html: `
     <div style="font-family: Arial; padding:20px;">
@@ -91,7 +91,7 @@ export const forgotPassword = async (req, res) => {
 
     const data = await resend.emails.send({
   from: "ForgeMobile <onboarding@resend.dev>",
-  to: user.email,
+  to: "support.forgemobile@gmail.com"
   subject: "ForgeMobile Password Reset",
   html: `
     <div style="font-family: Arial; padding:20px;">
