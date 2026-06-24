@@ -95,6 +95,7 @@ export const registerUser = async (req, res) => {
 
   } catch (error) {
     console.log("REGISTER ERROR:", error);
+    console.log("SMTP ERROR:", error?.response?.data || error.message);
     res.status(500).json({ message: error.message });
   }
 };
