@@ -15,6 +15,9 @@ const transporter = nodemailer.createTransport({
 
 // REGISTER
 export const registerUser = async (req, res) => {
+  console.log("Starting registration");
+console.log("Email:", email);
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
   try {
     const { username, email, password } = req.body;
 
@@ -50,6 +53,7 @@ export const registerUser = async (req, res) => {
 
     const verifyURL =
       `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
+    console.log("Sending verification mail...");
 
     await transporter.sendMail({
       from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
@@ -82,6 +86,7 @@ export const registerUser = async (req, res) => {
         </div>
       `,
     });
+    console.log("Mail sent successfully");
 
     res.status(201).json({
       message: "Registered successfully. Check your email.",
