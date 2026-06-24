@@ -3,39 +3,18 @@ import express from "express";
 import {
   registerUser,
   loginUser,
-  forgotPassword,
+  checkEmail,
   resetPassword,
-  verifyEmail
-}
-from "../controllers/authController.js";
+} from "../controllers/authController.js";
 
 const router = express.Router();
 
+router.post("/register", registerUser);
 
-router.post(
-  "/register",
-  registerUser
-);
+router.post("/login", loginUser);
 
-router.post(
-  "/login",
-  loginUser
-);
-router.post(
-  "/forgot-password",
-  forgotPassword
-);
+router.post("/check-email", checkEmail);
 
-router.put(
-  "/reset-password/:token",
-  resetPassword
-);
-router.get(
-
-  "/verify-email/:token",
-
-  verifyEmail
-
-);
+router.post("/reset-password", resetPassword);
 
 export default router;
