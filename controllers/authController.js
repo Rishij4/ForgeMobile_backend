@@ -23,13 +23,32 @@ export const registerUser = async (req, res) => {
     console.log("✅ User saved in MongoDB");
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-    });
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  },
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 15000,
+  tls: {
+    rejectUnauthorized: false
+  }
+});
     console.log("✅ Transporter created");
     console.log("⏳ About to send verification email...");
     const FRONTEND_URL = process.env.FRONTEND_URL;
     const verifyURL = `${FRONTEND_URL}/verify-email/${verifyToken}`;
+    console.log("Checking SMTP connection...");
+
+    try {
+      await transporter.verify();
+      console.log("✅ SMTP connection successful");
+    } catch (err) {
+      console.log("❌ SMTP VERIFY ERROR:", err);
+    }
 
     await transporter.sendMail({
       from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
