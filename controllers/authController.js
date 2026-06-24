@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import SibApiV3Sdk from "@getbrevo/brevo";
+import * as SibApiV3Sdk from "@getbrevo/brevo";
 
 // BREVO CONFIG
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
