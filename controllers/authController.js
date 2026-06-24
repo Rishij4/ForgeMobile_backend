@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 
-// Gmail SMTP Transporter (Render-safe)
+// SMTP TRANSPORTER
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
@@ -26,17 +26,24 @@ export const registerUser = async (req, res) => {
     const existingUser = await User.findOne({
       $or: [{ email }, { username }],
     });
-    console.log("STEP 3: Checked existing user");
+
+    if (existingUser) {
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+      if (existingUser.username === username) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    console.log("STEP 4: Password hashed");
+    console.log("STEP 3: Password hashed");
 
     const verifyToken = jwt.sign(
       { email },
       process.env.JWT_SECRET,
       { expiresIn: "24h" }
     );
-    console.log("STEP 5: JWT created");
 
     const newUser = new User({
       username,
@@ -46,25 +53,47 @@ export const registerUser = async (req, res) => {
     });
 
     await newUser.save();
-    console.log("STEP 6: User saved to MongoDB");
+    console.log("STEP 4: User saved to MongoDB");
 
-    // COMMENT EMAIL TEMPORARILY
-    /*
-    await transporter.sendMail({
-      from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Test",
-      html: `<p>Test</p>`,
-    });
-    console.log("STEP 7: Email sent");
-    */
+    const verifyURL = `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
+
+    console.log("STEP 5: Sending verification email...");
+
+    // SMTP SAFE BLOCK (DO NOT CRASH API IF FAILS)
+    try {
+      await transporter.sendMail({
+        from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "Verify Your ForgeMobile Account",
+        html: `
+          <div style="font-family: Arial; padding:20px;">
+            <h2 style="color:#4F46E5;">Welcome to ForgeMobile</h2>
+
+            <p>Please verify your account to continue.</p>
+
+            <a href="${verifyURL}"
+            style="background:#4F46E5;color:white;padding:12px 20px;
+            text-decoration:none;border-radius:6px;display:inline-block;">
+              Verify Account
+            </a>
+
+            <p>This link expires in 24 hours.</p>
+          </div>
+        `,
+      });
+
+      console.log("STEP 6: Email sent successfully");
+
+    } catch (emailError) {
+      console.log("STEP 6 SMTP ERROR:", emailError.message);
+    }
 
     return res.status(201).json({
-      message: "Registration successful WITHOUT EMAIL",
+      message: "Registration successful. Check your email.",
     });
 
   } catch (error) {
-    console.log("REGISTER CRASH:", error);
+    console.log("REGISTER ERROR:", error);
     return res.status(500).json({
       message: error.message,
     });
@@ -117,16 +146,14 @@ export const forgotPassword = async (req, res) => {
       return res.status(404).json({ message: "No account found" });
     }
 
-    const resetToken =
-      crypto.randomBytes(32).toString("hex");
+    const resetToken = crypto.randomBytes(32).toString("hex");
 
     user.resetToken = resetToken;
     user.resetTokenExpire = Date.now() + 3600000;
 
     await user.save();
 
-    const resetURL =
-      `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
     await transporter.sendMail({
       from: `"ForgeMobile Support" <${process.env.EMAIL_USER}>`,
@@ -134,12 +161,12 @@ export const forgotPassword = async (req, res) => {
       subject: "ForgeMobile Password Reset",
       html: `
         <div style="font-family: Arial; padding:20px;">
-          <h2>Password Reset</h2>
+          <h2>ForgeMobile Password Reset</h2>
 
           <a href="${resetURL}"
           style="background:#4F46E5;color:white;padding:12px 20px;
           text-decoration:none;border-radius:6px;display:inline-block;">
-          Reset Password
+            Reset Password
           </a>
 
           <p>This link expires in 1 hour.</p>
