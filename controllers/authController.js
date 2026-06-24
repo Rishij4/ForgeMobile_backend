@@ -37,7 +37,7 @@ export const registerUser = async (req, res) => {
           <h2 style="color:#4F46E5;">Welcome to ForgeMobile</h2>
           <p>Please verify your account.</p>
           <p>Click the button below to continue:</p>
-          <a href="${verifyURL}" style="background:#4F46E5;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;">Reset Password</a>
+          <a href="${verifyURL}" style="background:#4F46E5;color:white;padding:12px 20px;text-decoration:none;border-radius:6px;display:inline-block;">Verify Account</a>
           <p style="margin-top:20px;">This link expires in 1 hour.</p>
           <p>If you didn’t request this, ignore this email.</p>
           <hr><small>ForgeMobile Support Team</small>
@@ -87,6 +87,7 @@ export const forgotPassword = async (req, res) => {
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
     });
     console.log("Transporter created");
+    const FRONTEND_URL = process.env.FRONTEND_URL;
 
     const resetURL  = `${FRONTEND_URL}/reset-password/${resetToken}`;
     console.log("Sending email...");
