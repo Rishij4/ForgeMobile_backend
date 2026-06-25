@@ -137,3 +137,54 @@ export const resetPassword = async (req, res) => {
     });
   }
 };
+// ADMIN LOGIN
+export const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    const isMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isMatch) {
+      return res.status(400).json({
+        message: "Invalid credentials",
+      });
+    }
+
+    // only admin allowed
+    if (user.role !== "admin") {
+      return res.status(403).json({
+        message: "Not authorized as admin",
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.json({
+      token,
+      admin: {
+        id: user._id,
+        username: user.username
+      }
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
