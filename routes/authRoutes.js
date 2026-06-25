@@ -5,18 +5,30 @@ import {
   loginUser,
   checkEmail,
   resetPassword,
-  adminLogin
+  adminLogin,
+  validateUser
 } from "../controllers/authController.js";
+
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post("/register", registerUser);
 
 router.post("/login", loginUser);
+
 router.post("/admin-login", adminLogin);
 
 router.post("/check-email", checkEmail);
 
 router.post("/reset-password", resetPassword);
+
+
+// validate current user exists
+router.get(
+  "/validate",
+  authMiddleware,
+  validateUser
+);
 
 export default router;
