@@ -188,3 +188,16 @@ export const adminLogin = async (req, res) => {
     });
   }
 };
+export const validateUser = async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      user: req.user
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message
+    });
+  }
+};
