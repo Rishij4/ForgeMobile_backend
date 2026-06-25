@@ -3,8 +3,6 @@ import User from "../models/User.js";
 
 const authMiddleware = async (req, res, next) => {
   try {
-    console.log("===== AUTH START =====");
-    console.log("AUTH HEADER =", req.headers.authorization);
 
     const authHeader = req.headers.authorization;
 
@@ -22,11 +20,9 @@ const authMiddleware = async (req, res, next) => {
       process.env.JWT_SECRET
     );
 
-    console.log("DECODED =", decoded);
 
     const user = await User.findById(decoded.id);
 
-    console.log("FOUND USER =", user);
 
     if (!user) {
       return res.status(404).json({
