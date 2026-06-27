@@ -50,6 +50,62 @@ Evaluation Guidelines:
 
 Additionally provide: compatible (true or false), overallScore (0-100), performanceScore (0-100), thermalScore (0-100), batteryEfficiency (0-100), issues (array of detected concerns), marketPrice (integer, estimated current market price in INR)
 
+Market Competitor Analysis:
+
+After calculating marketPrice, find smartphones currently available in the Indian market within a similar price range.
+
+Use estimated marketPrice as reference.
+
+Search smartphones within approximately ±15% price range.
+
+Only include REAL commercially launched smartphones currently available in online or offline Indian market.
+
+Allowed brands:
+Samsung
+Apple
+OnePlus
+Xiaomi
+iQOO
+Vivo
+Oppo
+Poco
+Nothing
+Motorola
+Realme
+Google Pixel
+Asus ROG
+Infinix
+Tecno
+Lava
+Redmi
+
+Return maximum 5 competitor phones.
+
+For each competitor phone return complete specifications using ForgeMobile structure:
+
+- brand
+- model
+- price
+- processor
+- ram
+- storage
+- display
+- battery
+- camera
+- connectivity
+- audio
+- thermal
+- phoneBuild
+- haptics
+- sensors
+- components
+
+Rules:
+Use realistic publicly known specifications only.
+Do not invent fictional phones.
+competitorPhones field is mandatory.
+Return competitorPhones as array.
+
 marketPrice rules:
 Use component market pricing conditions valid as of ${currentDate}. Assume the user is calculating smartphone hardware cost on ${currentDate}.
 Estimate the approximate CURRENT market cost in India by calculating the individual price of EACH selected component separately.
@@ -106,7 +162,28 @@ Expected format:
   "weaknesses": [],
   "upgrades": [],
   "summary": "",
-  "marketPrice": 0
+  "marketPrice": 0,
+
+  "competitorPhones": [
+    {
+      "brand": "",
+      "model": "",
+      "price": 0,
+      "processor": "",
+      "ram": "",
+      "storage": "",
+      "display": "",
+      "battery": "",
+      "camera": "",
+      "connectivity": "",
+      "audio": "",
+      "thermal": "",
+      "phoneBuild": "",
+      "haptics": "",
+      "sensors": [],
+      "components": []
+    }
+  ]
 }`;
 
   try {
@@ -125,10 +202,15 @@ Expected format:
       }
     }
     const text = result.response.text();
-    console.log("GEMINI TEXT:\n", text);
-    return text;
+
+    const cleaned = text
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+    return cleaned;
   } catch (error) {
     console.error("GEMINI ERROR:", error);
+    
     throw error;
   }
 };
