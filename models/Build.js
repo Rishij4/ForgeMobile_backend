@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const buildSchema = new mongoose.Schema(
 
   {
@@ -89,6 +88,10 @@ marketPriceDate: {
     default: []
   }
 
+},
+competitorPhones: {
+  type: Array,
+  default: []
 },
 
     aiRecommendation: {
