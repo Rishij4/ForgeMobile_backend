@@ -39,7 +39,7 @@ export const titanVideoEditorsPreset = async () => {
     thermal,      // Heavy-duty liquid refrigeration block loop
     phoneBuild    // Titanium protective frame chassis material
   ] = await Promise.all([
-    RAM.findOne({ type: "LPDDR5X", size: 24 }),
+    RAM.findOne({ type: "LPDDR5X", size: 16 }),
     Storage.findOne({ type: "UFS 4.1", capacity: 1024 }),
     Battery.findOne({ capacity: 7000, chargingSpeed: 120, type: "Silicon Carbon" }),
     Display.findOne({ panelType: "LTPO 3.0 AMOLED", refreshRate: 165, resolution: "QHD+", size: 6.8 }),
