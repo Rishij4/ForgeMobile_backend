@@ -19,45 +19,54 @@ import Component from "../../models/Component.js";
 import { buildConnectivity, buildAudio } from "../../utils/presetHelpers.js";
 
 export const ecoCasualUsersPreset = async () => {
-  // Select random balanced casual-use processor
-  const processors = await SoC.find({ name: { $in: ["Qualcomm Snapdragon 6 Gen 1", "MediaTek Dimensity 7050", "Qualcomm Snapdragon 7s Gen 2", "MediaTek Dimensity 7200"] } });
+  const preset = {
+    processors: ["Qualcomm Snapdragon 6 Gen 1", "MediaTek Dimensity 7050", "Qualcomm Snapdragon 7s Gen 2", "MediaTek Dimensity 7200"],
+    ram: { type: "LPDDR4X", size: 6 },
+    storage: { type: "UFS 2.2", capacity: 128 },
+    battery: { capacity: 5000, chargingSpeed: 33, type: "Li-Po" },
+    display: { panelType: "AMOLED", refreshRate: 90, resolution: "FHD+", size: 6.6 },
+    primaryCamera: { cameraType: "Primary Sensor", mp: 50, ois: "No" },
+    ultraWideCamera: { cameraType: "Ultra-Wide Module", mp: 8, ois: "No" },
+    network: { type: "5G Sub-6" },
+    wifi: { type: "WiFi 6" },
+    bluetooth: { type: "Bluetooth 5.2" },
+    speaker: { name: "Dual Stereo" },
+    dolby: { name: "None" },
+    hiRes: { name: "Standard Audio" },
+    haptics: { name: "ERM Vibration Motor" },
+    thermal: { name: "Graphite Cooling Layer" },
+    build: { material: "Plastic Frame" },
+    sensors: ["Accelerometer", "Proximity Sensor", "Gyroscope", "Compass", "Ambient Light Sensor"],
+    components: ["NFC", "Optical Fingerprint Sensor"]
+  };
+
+  // Select random matching processor
+  const processors = await SoC.find({ name: { $in: preset.processors } });
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
+  // Concurrent lookups for discrete hardware components
   const [
-    ram,              // smooth 6GB multitasking
-    storage,          // standard 128GB digital vault
-    battery,          // balanced charging pack
-    display,          // fluid AMOLED presentation panel
-    primaryCamera,    // high-res optics engine
-    ultraWideCamera,  // secondary perspective module
-    network,          // modern communication standard
-    wifi,
-    bluetooth,
-    speaker,          // media consumption hardware
-    dolby,
-    hiRes,
-    haptics,          // standard feedback core
-    thermal,          // baseline thermal layers
-    phoneBuild        // durable composite chassis
+    ram, storage, battery, display, primaryCamera, ultraWideCamera,
+    network, wifi, bluetooth, speaker, dolby, hiRes, haptics, thermal, phoneBuild
   ] = await Promise.all([
-    RAM.findOne({ size: 6 }),
-    Storage.findOne({ capacity: 128 }),
-    Battery.findOne({ capacity: 5000, chargingSpeed: 33 }),
-    Display.findOne({ refreshRate: 90, panelType: "AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 50 }),
-    Camera.findOne({ cameraType: "Ultra-Wide Module", mp: 8 }),
-    Network.findOne({ type: "5G Sub-6" }),
-    Wifi.findOne({ type: "WiFi 6" }),
-    Bluetooth.findOne({ type: "Bluetooth 5.2" }),
-    AudioSpeaker.findOne({ name: "Dual Stereo" }),
-    AudioDolby.findOne({ name: "None" }),
-    AudioHiRes.findOne({ name: "Standard Audio" }),
-    Haptics.findOne({ name: "ERM Vibration Motor" }),
-    Thermal.findOne({ name: "Graphite Cooling Layer" }),
-    PhoneBuild.findOne({ material: "Plastic Frame" })
+    RAM.findOne(preset.ram),
+    Storage.findOne(preset.storage),
+    Battery.findOne(preset.battery),
+    Display.findOne(preset.display),
+    Camera.findOne(preset.primaryCamera),
+    Camera.findOne(preset.ultraWideCamera),
+    Network.findOne(preset.network),
+    Wifi.findOne(preset.wifi),
+    Bluetooth.findOne(preset.bluetooth),
+    AudioSpeaker.findOne(preset.speaker),
+    AudioDolby.findOne(preset.dolby),
+    AudioHiRes.findOne(preset.hiRes),
+    Haptics.findOne(preset.haptics),
+    Thermal.findOne(preset.thermal),
+    PhoneBuild.findOne(preset.build)
   ]);
 
-  // Map camera object configurations manually
+  // Map individual lens entities to unified multi-slot configuration
   const camera = {
     count: 2,
     slots: [
@@ -68,13 +77,13 @@ export const ecoCasualUsersPreset = async () => {
     isValid: true
   };
 
-  // Build infrastructure adapters via custom utilities
+  // Standardize peripheral adapter arrays via structural helpers
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
 
   const [sensors, components] = await Promise.all([
-    Sensor.find({ name: { $in: ["Accelerometer", "Proximity Sensor", "Gyroscope", "Compass", "Ambient Light Sensor"] } }),
-    Component.find({ name: { $in: ["NFC", "Optical Fingerprint Sensor"] } })
+    Sensor.find({ name: { $in: preset.sensors } }),
+    Component.find({ name: { $in: preset.components } })
   ]);
 
   return { processor, ram, storage, battery, display, camera, connectivity, audio, haptics, thermal, phoneBuild, sensors, components };
