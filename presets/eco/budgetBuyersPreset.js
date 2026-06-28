@@ -42,7 +42,7 @@ export const ecoBudgetBuyersPreset = async () => {
     RAM.findOne({ type: "LPDDR2", size: 4 }),
     Storage.findOne({ type: "UFS 2.1", capacity: 64 }),
     Battery.findOne({ capacity: 5000, chargingSpeed: 18, type: "Li-Po" }),
-    Display.findOne({ panelType: "IPS LCD", refreshRate: 90, resolution: "HD+", size: 6.6 }),
+    Display.findOne({ panelType: "IPS LCD", refreshRate: 90, resolution: "HD+", size: 6.5 }),
     Camera.findOne({ cameraType: "Primary Sensor", mp: 50, ois: "No" }),
     Network.findOne({ type: "4G LTE" }),
     Wifi.findOne({ type: "WiFi 5" }),
