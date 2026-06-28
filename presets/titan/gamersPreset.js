@@ -50,7 +50,7 @@ export const titanGamersPreset = async () => {
     AudioSpeaker.findOne({ name: "Quad Speaker" }),
     AudioDolby.findOne({ name: "Dolby Atmos" }),
     AudioHiRes.findOne({ name: "Hi-Res Audio" }),
-    Haptics.findOne({ name: "X-Axis Linear Actuator" }),
+    Haptics.findOne({ name: "X-Axis Wideband Haptics" }),
     Thermal.findOne({ name: "Liquid Cooling System" }),
     PhoneBuild.findOne({ material: "Titanium Frame" })
   ]);
