@@ -24,26 +24,26 @@ export const ecoSeniorCitizensPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // simple, stable multitasking capacity
-    storage,      // enough local vault headroom for years
-    battery,      // long-lasting reliable battery capacity
-    display,      // large, smooth readable panel setup
-    cameraPreset, // straightforward high-res single sensor
-    network,      // modern stable connectivity standard
+    ram,          // RAM → type + size
+    storage,      // Storage → type + capacity
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity sub-documents
     wifi,
     bluetooth,
-    speaker,      // loud stereo speaker outputs for accessibility
+    speaker,      // Audio configuration sub-documents
     dolby,
     hiRes,
-    haptics,      // simple basic vibration feedback
-    thermal,      // structural cool temperature protection
-    phoneBuild    // lightweight durable plastic framework
+    haptics,      // Mechanical haptics standard
+    thermal,      // Graphite heat dissipation layer
+    phoneBuild    // Body structural frame chassis
   ] = await Promise.all([
-    RAM.findOne({ size: 4 }),
-    Storage.findOne({ capacity: 128 }),
-    Battery.findOne({ capacity: 5000, chargingSpeed: 18 }),
-    Display.findOne({ refreshRate: 90 }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 50 }),
+    RAM.findOne({ type: "LPDDR4X", size: 4 }),
+    Storage.findOne({ type: "UFS 2.2", capacity: 128 }),
+    Battery.findOne({ capacity: 5000, chargingSpeed: 18, type: "Li-Po" }),
+    Display.findOne({ panelType: "IPS LCD", refreshRate: 90, resolution: "HD+", size: 6.7 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 50, ois: "No" }),
     Network.findOne({ type: "5G Sub-6" }),
     Wifi.findOne({ type: "WiFi 5" }),
     Bluetooth.findOne({ type: "Bluetooth 5.0" }),
@@ -55,7 +55,7 @@ export const ecoSeniorCitizensPreset = async () => {
     PhoneBuild.findOne({ material: "Plastic Frame" })
   ]);
 
-  // Translate standalone model payloads into configuration context states
+  // Aggregate composite properties using factory helper utilities
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
