@@ -24,26 +24,26 @@ export const titanTechEnthusiastsPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // premium future-proof capacity (16GB)
-    storage,      // deep local hardware headroom (1TB)
-    battery,      // massive high-capacity silicon matrix (6500mAh, 120W)
-    display,      // peak refresh fluid panel (165Hz LTPO AMOLED)
-    cameraPreset, // ultra high-res primary sensor engine (200MP)
-    network,      // next-gen mmWave gigabit lane (5G mmWave)
-    wifi,         // bleeding-edge WiFi 7
-    bluetooth,    // low-latency Bluetooth 5.4 link
-    speaker,      // premium spatial monitor quad acoustics
+    ram,          // RAM → type + size (LPDDR5X, 16GB)
+    storage,      // Storage → type + capacity (UFS 4.1, 1TB)
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity hardware documents
+    wifi,
+    bluetooth,
+    speaker,      // Audio spatial array sub-documents
     dolby,
     hiRes,
-    haptics,      // discrete tactile actuator feedback core
-    thermal,      // heavy load liquid cooling system
-    phoneBuild    // rigid ultra-premium structural frame (Titanium Frame)
+    haptics,      // Premium linear vibration actuator
+    thermal,      // Heavy load liquid refrigeration loop
+    phoneBuild    // Titanium protective outer frame chassis
   ] = await Promise.all([
-    RAM.findOne({ size: 16 }),
-    Storage.findOne({ capacity: 1024 }),
-    Battery.findOne({ capacity: 6500, chargingSpeed: 120 }),
-    Display.findOne({ refreshRate: 165, panelType: "LTPO AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 200 }),
+    RAM.findOne({ type: "LPDDR5X", size: 16 }),
+    Storage.findOne({ type: "UFS 4.1", capacity: 1024 }),
+    Battery.findOne({ capacity: 6500, chargingSpeed: 120, type: "Silicon Carbon" }),
+    Display.findOne({ panelType: "LTPO 3.0 AMOLED", refreshRate: 165, resolution: "QHD+", size: 6.7 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 200, ois: "Yes" }),
     Network.findOne({ type: "5G mmWave" }),
     Wifi.findOne({ type: "WiFi 7" }),
     Bluetooth.findOne({ type: "Bluetooth 5.4" }),
@@ -55,14 +55,14 @@ export const titanTechEnthusiastsPreset = async () => {
     PhoneBuild.findOne({ material: "Titanium Frame" })
   ]);
 
-  // Translate specific standalone fields through structural utility adapters
+  // Aggregate composite modules using layout helper factories
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
 
   const [sensors, components] = await Promise.all([
     Sensor.find({ name: { $in: ["Accelerometer", "Gyroscope", "Compass", "Ambient Light Sensor"] } }),
-    Component.find({ name: { $in: ["NFC", "IR Blaster"] } }) // extra flagship features
+    Component.find({ name: { $in: ["NFC", "IR Blaster"] } })
   ]);
 
   return { processor, ram, storage, battery, display, camera, connectivity, audio, haptics, thermal, phoneBuild, sensors, components };
