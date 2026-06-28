@@ -24,26 +24,26 @@ export const ecoFirstTimeUsersPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // baseline capacity for daily apps
-    storage,      // decent storage space
-    battery,      // long-lasting reliable battery
-    display,      // responsive 90Hz panel
-    cameraPreset, // standard entry-level primary optics
-    network,      // stable standard connectivity
+    ram,          // RAM → type + size
+    storage,      // Storage → type + capacity
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity hardware documents
     wifi,
     bluetooth,
-    speaker,      // clear basic audio outputs
+    speaker,      // Audio configuration sub-documents
     dolby,
     hiRes,
-    haptics,      // traditional haptic response
-    thermal,      // stable structural cooling layers
-    phoneBuild    // cost-effective durable frame
+    haptics,      // Mechanical haptics standard
+    thermal,      // Graphite heat dispersion shield
+    phoneBuild    // Body structural frame casing
   ] = await Promise.all([
-    RAM.findOne({ size: 4 }),
-    Storage.findOne({ capacity: 128 }),
-    Battery.findOne({ capacity: 5000, chargingSpeed: 18 }),
-    Display.findOne({ refreshRate: 90 }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 50 }),
+    RAM.findOne({ type: "LPDDR4X", size: 4 }),
+    Storage.findOne({ type: "UFS 2.2", capacity: 128 }),
+    Battery.findOne({ capacity: 5000, chargingSpeed: 18, type: "Li-Po" }),
+    Display.findOne({ panelType: "IPS LCD", refreshRate: 90, resolution: "HD+", size: 6.5 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 50, ois: "No" }),
     Network.findOne({ type: "4G LTE" }),
     Wifi.findOne({ type: "WiFi 5" }),
     Bluetooth.findOne({ type: "Bluetooth 5.0" }),
@@ -55,7 +55,7 @@ export const ecoFirstTimeUsersPreset = async () => {
     PhoneBuild.findOne({ material: "Plastic Frame" })
   ]);
 
-  // Map composite fields through conversion adapters
+  // Aggregate composite properties using custom helper transformers
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
