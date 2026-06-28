@@ -24,26 +24,26 @@ export const standardMultitaskersPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // multitasking priority (12GB)
-    storage,      // lots of app storage (256GB)
-    battery,      // heavy usage battery
-    display,      // smoother UI panel (144Hz AMOLED)
-    cameraPreset, // decent high-res primary module
-    network,      // baseline mobile connectivity
+    ram,          // RAM → type + size (LPDDR5X, 12GB)
+    storage,      // Storage → type + capacity (UFS 4.0, 256GB)
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity configuration layout blocks
     wifi,
     bluetooth,
-    speaker,      // premium audio configurations
+    speaker,      // Audio spatial array sub-documents
     dolby,
     hiRes,
-    haptics,      // premium tactile response core
-    thermal,      // critical for keeping sustained loads cool
-    phoneBuild    // rigid structural aluminum frame
+    haptics,      // Z-Axis Linear Actuator tactile core
+    thermal,      // Sustained load vapor chamber cooling
+    phoneBuild    // Aluminum perimeter frame chassis
   ] = await Promise.all([
-    RAM.findOne({ size: 12 }),
-    Storage.findOne({ capacity: 256 }),
-    Battery.findOne({ capacity: 5500, chargingSpeed: 45 }),
-    Display.findOne({ refreshRate: 144, panelType: "AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 64 }),
+    RAM.findOne({ type: "LPDDR5X", size: 12 }),
+    Storage.findOne({ type: "UFS 4.0", capacity: 256 }),
+    Battery.findOne({ capacity: 5500, chargingSpeed: 45, type: "Li-Ion" }),
+    Display.findOne({ panelType: "AMOLED", refreshRate: 144, resolution: "FHD+", size: 6.7 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 64, ois: "Yes" }),
     Network.findOne({ type: "5G Sub-6" }),
     Wifi.findOne({ type: "WiFi 6" }),
     Bluetooth.findOne({ type: "Bluetooth 5.3" }),
@@ -55,7 +55,7 @@ export const standardMultitaskersPreset = async () => {
     PhoneBuild.findOne({ material: "Aluminum Frame" })
   ]);
 
-  // Translate specific standalone fields through structural mapping helpers
+  // Aggregate composite layouts using factory conversion utilities
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
