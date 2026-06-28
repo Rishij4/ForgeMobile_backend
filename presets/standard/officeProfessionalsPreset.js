@@ -24,26 +24,26 @@ export const standardOfficeProfessionalsPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // smooth 8GB multitasking performance
-    storage,      // docs/files/presentations (256GB)
-    battery,      // long workday battery lifespan
-    display,      // crisp professional 120Hz AMOLED panel
-    cameraPreset, // reliable for scanning/docs/video calls
-    network,      // secure modern enterprise cellular
+    ram,          // RAM → type + size (LPDDR5, 8GB)
+    storage,      // Storage → type + capacity (UFS 3.1, 256GB)
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity configuration blocks
     wifi,
     bluetooth,
-    speaker,      // clear voice communication for meetings
+    speaker,      // Audio properties models
     dolby,
     hiRes,
-    haptics,      // premium business-tier tactile feel
-    thermal,      // vapor chamber heat safety layer
-    phoneBuild    // professional aluminum casing
+    haptics,      // Z-Axis Linear Actuator tactile core
+    thermal,      // Vapor chamber thermal layer
+    phoneBuild    // Aluminum business structural chassis
   ] = await Promise.all([
-    RAM.findOne({ size: 8 }),
-    Storage.findOne({ capacity: 256 }),
-    Battery.findOne({ capacity: 5500, chargingSpeed: 45 }),
-    Display.findOne({ refreshRate: 120, panelType: "AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 50 }),
+    RAM.findOne({ type: "LPDDR5", size: 8 }),
+    Storage.findOne({ type: "UFS 3.1", capacity: 256 }),
+    Battery.findOne({ capacity: 5500, chargingSpeed: 45, type: "Li-Ion" }),
+    Display.findOne({ panelType: "AMOLED", refreshRate: 120, resolution: "FHD+", size: 6.7 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 50, ois: "Yes" }),
     Network.findOne({ type: "5G Sub-6" }),
     Wifi.findOne({ type: "WiFi 6" }),
     Bluetooth.findOne({ type: "Bluetooth 5.3" }),
@@ -55,7 +55,7 @@ export const standardOfficeProfessionalsPreset = async () => {
     PhoneBuild.findOne({ material: "Aluminum Frame" })
   ]);
 
-  // Consolidate properties through layout formatting dependencies
+  // Aggregate composite objects using mapping helper utilities
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
