@@ -42,7 +42,7 @@ export const ecoStudentsPreset = async () => {
     RAM.findOne({ type: "LPDDR4X", size: 6 }),
     Storage.findOne({ type: "UFS 2.2", capacity: 128 }),
     Battery.findOne({ capacity: 5000, chargingSpeed: 33, type: "Li-Ion" }),
-    Display.findOne({ panelType: "AMOLED", refreshRate: 120, resolution: "FHD+", size: 6.6 }),
+    Display.findOne({ panelType: "AMOLED", refreshRate: 120, resolution: "FHD+", size: 6.5 }),
     Camera.findOne({ cameraType: "Primary Sensor", mp: 50, ois: "No" }),
     Network.findOne({ type: "5G Sub-6" }),
     Wifi.findOne({ type: "WiFi 6" }),
