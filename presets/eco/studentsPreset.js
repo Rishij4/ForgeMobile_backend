@@ -24,26 +24,26 @@ export const ecoStudentsPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // study + multitasking capacity
-    storage,      // apps + notes + media storage space
-    battery,      // all-day operational battery cell
-    display,      // fluid smooth 120Hz AMOLED panel
-    cameraPreset, // reliable sensor for document scans + photos
-    network,      // modern 5G cellular communication standard
+    ram,          // RAM → type + size
+    storage,      // Storage → type + capacity
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity configuration models
     wifi,
     bluetooth,
-    speaker,      // clean stereo outputs for video lectures
+    speaker,      // Audio properties models
     dolby,
     hiRes,
-    haptics,      // baseline vibration feedback
-    thermal,      // stable heat dispersion layers
-    phoneBuild    // budget-friendly durable composite chassis
+    haptics,      // Physical haptics layer integration
+    thermal,      // Heat shield protective layers
+    phoneBuild    // Structural build frame configuration
   ] = await Promise.all([
-    RAM.findOne({ size: 6 }),
-    Storage.findOne({ capacity: 128 }),
+    RAM.findOne({ type: "LPDDR4X", size: 6 }),
+    Storage.findOne({ type: "UFS 2.2", capacity: 128 }),
     Battery.findOne({ capacity: 5000, chargingSpeed: 33, type: "Li-Ion" }),
-    Display.findOne({ refreshRate: 120, panelType: "AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 50 }),
+    Display.findOne({ panelType: "AMOLED", refreshRate: 120, resolution: "FHD+", size: 6.6 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 50, ois: "No" }),
     Network.findOne({ type: "5G Sub-6" }),
     Wifi.findOne({ type: "WiFi 6" }),
     Bluetooth.findOne({ type: "Bluetooth 5.2" }),
@@ -55,7 +55,7 @@ export const ecoStudentsPreset = async () => {
     PhoneBuild.findOne({ material: "Plastic Frame" })
   ]);
 
-  // Translate direct database documents to structured context layouts
+  // Aggregate composite attributes via custom factory helper methods
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
