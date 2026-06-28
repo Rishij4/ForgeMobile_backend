@@ -24,27 +24,27 @@ export const titanContentCreatorsPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,              // heavy 4K editing + baseline processing (16GB)
-    storage,          // massive capacity for local raw files (1TB UFS 4.1)
-    battery,          // long creator sessions (7000mAh Silicon Carbon, 100W)
-    display,          // studio color-accurate panel (120Hz LTPO 3.0 AMOLED QHD+)
-    primaryCamera,    // ultimate high-res primary sensor (200MP, OIS)
-    ultraWideCamera,  // secondary scenery perspective module (50MP, OIS)
-    telephotoCamera,  // third optical compression lens (50MP, OIS)
-    network,          // ultra-fast wireless uplink (5G mmWave)
-    wifi,             // bleeding-edge local bandwidth lane (WiFi 7)
-    bluetooth,        // low latency monitor sync link (Bluetooth 5.4)
-    speaker,          // true spatial monitor quad speakers
+    ram,              // RAM → type + size (LPDDR5X, 16GB)
+    storage,          // Storage → type + capacity (UFS 4.1, 1TB)
+    battery,          // Battery → capacity + chargingSpeed + type
+    display,          // Display → panelType + refreshRate + resolution + size
+    primaryCamera,    // Triple Camera sub-modules setup
+    ultraWideCamera,
+    telephotoCamera,
+    network,          // Connectivity peripheral configurations
+    wifi,
+    bluetooth,
+    speaker,          // Audio properties layout configurations
     dolby,
     hiRes,
-    haptics,          // modern Z-axis linear tactility feedback
-    thermal,          // premium cooling layer to combat rendering heat
-    phoneBuild        // heavy duty ultra-premium protective chassis frame
+    haptics,          // Premium linear vibration actuator
+    thermal,          // High performance thermal dissipation block
+    phoneBuild        // Titanium structural frame chassis
   ] = await Promise.all([
-    RAM.findOne({ size: 16 }),
+    RAM.findOne({ type: "LPDDR5X", size: 16 }),
     Storage.findOne({ capacity: 1024, type: "UFS 4.1" }),
     Battery.findOne({ capacity: 7000, chargingSpeed: 100, type: "Silicon Carbon" }),
-    Display.findOne({ refreshRate: 120, panelType: "LTPO 3.0 AMOLED", resolution: "QHD+" }),
+    Display.findOne({ panelType: "LTPO 3.0 AMOLED", refreshRate: 120, resolution: "QHD+", size: 6.8 }),
     Camera.findOne({ cameraType: "Primary Sensor", mp: 200, ois: "Yes" }),
     Camera.findOne({ cameraType: "Ultra-Wide Module", mp: 50, ois: "Yes" }),
     Camera.findOne({ cameraType: "Telephoto Module", mp: 50, ois: "Yes" }),
@@ -59,7 +59,7 @@ export const titanContentCreatorsPreset = async () => {
     PhoneBuild.findOne({ material: "Titanium Frame" })
   ]);
 
-  // Construct structured camera array block parameters manually
+  // Map individual lens records manually into unified multi-slot configuration blocks
   const camera = {
     count: 3,
     slots: [
@@ -71,7 +71,7 @@ export const titanContentCreatorsPreset = async () => {
     isValid: true
   };
 
-  // Compile network and audio configurations via structural factory adapters
+  // Build composite configurations via peripheral mapping utilities
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
 
