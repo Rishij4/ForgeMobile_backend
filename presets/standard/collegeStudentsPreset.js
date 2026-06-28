@@ -24,26 +24,26 @@ export const standardCollegeStudentsPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // fluid 8GB multi-app workspace
-    storage,      // generous 256GB local file storage
-    battery,      // high capacity 5500mAh cell
-    display,      // cinematic 120Hz AMOLED panel
-    cameraPreset, // ultra-crisp 64MP primary optics
-    network,      // 5G communications baseline
+    ram,          // RAM → type + size (LPDDR5, 8GB)
+    storage,      // Storage → type + capacity (UFS 3.1, 256GB)
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity hardware documents
     wifi,
     bluetooth,
-    speaker,      // premium audio arrangement
+    speaker,      // Audio configuration sub-documents
     dolby,
     hiRes,
-    haptics,      // modern tactile linear vibration
-    thermal,      // vapor chamber heat dissipation 
-    phoneBuild    // robust rigid aluminum chassis
+    haptics,      // Tactile linear haptics core
+    thermal,      // Vapor chamber cooling matrix
+    phoneBuild    // Aluminum perimeter frame material
   ] = await Promise.all([
-    RAM.findOne({ size: 8 }),
-    Storage.findOne({ capacity: 256 }),
-    Battery.findOne({ capacity: 5500 }),
-    Display.findOne({ refreshRate: 120, panelType: "AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 64 }),
+    RAM.findOne({ type: "LPDDR5", size: 8 }),
+    Storage.findOne({ type: "UFS 3.1", capacity: 256 }),
+    Battery.findOne({ capacity: 5500, chargingSpeed: 45, type: "Li-Ion" }),
+    Display.findOne({ panelType: "AMOLED", refreshRate: 120, resolution: "FHD+", size: 6.7 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 64, ois: "Yes" }),
     Network.findOne({ type: "5G Sub-6" }),
     Wifi.findOne({ type: "WiFi 6" }),
     Bluetooth.findOne({ type: "Bluetooth 5.3" }),
@@ -55,7 +55,7 @@ export const standardCollegeStudentsPreset = async () => {
     PhoneBuild.findOne({ material: "Aluminum Frame" })
   ]);
 
-  // Aggregate composite components via layout helper structures
+  // Aggregate compound layout configurations using utility transforms
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
