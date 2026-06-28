@@ -24,26 +24,26 @@ export const titanVideoEditorsPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // heavy timeline scratch editing space (24GB)
-    storage,      // deep local capacity for massive video clips (1TB)
-    battery,      // high-drain sustained rendering session capacity (7000mAh, 120W)
-    display,      // color-accurate premium monitoring interface (165Hz LTPO AMOLED)
-    cameraPreset, // reliable high-fidelity primary footage sensor (200MP)
-    network,      // seamless high bit-rate footage ingestion pipelines (5G mmWave)
-    wifi,         // wireless high bandwidth proxy transfers (WiFi 7)
-    bluetooth,    // low-latency studio monitor headphones sync link
-    speaker,      // reference-grade quad monitoring acoustics
+    ram,          // RAM → type + size (LPDDR5X, 24GB timeline cache headroom)
+    storage,      // Storage → type + capacity (UFS 4.1, 1TB massive video files)
+    battery,      // Battery → capacity + chargingSpeed + type (Silicon Carbon sustained export)
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity hardware documents
+    wifi,
+    bluetooth,
+    speaker,      // Audio spatial array sub-documents
     dolby,
     hiRes,
-    haptics,      // high-fidelity tactile timeline scrubbing feedback
-    thermal,      // heavy liquid vapor matrix cooling to prevent throttling
-    phoneBuild    // robust ultra-premium structural frame (Titanium Frame)
+    haptics,      // Premium linear vibration actuator
+    thermal,      // Heavy-duty liquid refrigeration block loop
+    phoneBuild    // Titanium protective frame chassis material
   ] = await Promise.all([
-    RAM.findOne({ size: 24 }),
-    Storage.findOne({ capacity: 1024 }),
-    Battery.findOne({ capacity: 7000, chargingSpeed: 120 }),
-    Display.findOne({ refreshRate: 165, panelType: "LTPO AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 200 }),
+    RAM.findOne({ type: "LPDDR5X", size: 24 }),
+    Storage.findOne({ type: "UFS 4.1", capacity: 1024 }),
+    Battery.findOne({ capacity: 7000, chargingSpeed: 120, type: "Silicon Carbon" }),
+    Display.findOne({ panelType: "LTPO 3.0 AMOLED", refreshRate: 165, resolution: "QHD+", size: 6.8 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 200, ois: "Yes" }),
     Network.findOne({ type: "5G mmWave" }),
     Wifi.findOne({ type: "WiFi 7" }),
     Bluetooth.findOne({ type: "Bluetooth 5.4" }),
@@ -55,7 +55,7 @@ export const titanVideoEditorsPreset = async () => {
     PhoneBuild.findOne({ material: "Titanium Frame" })
   ]);
 
-  // Translate direct standalone data references through layout helpers
+  // Aggregate composite layouts using utility helper templates
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
