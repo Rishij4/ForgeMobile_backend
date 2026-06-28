@@ -24,26 +24,26 @@ export const standardPowerUsersPreset = async () => {
   const processor = processors[Math.floor(Math.random() * processors.length)];
 
   const [
-    ram,          // heavy multitasking (12GB)
-    storage,      // deep storage for apps/media/files (512GB)
-    battery,      // long heavy usage pack (6000mAh, 67W)
-    display,      // flagship-like display panel (144Hz AMOLED)
-    cameraPreset, // ultra high-res 108MP primary optics
-    network,      // premium standalone fast connectivity (5G mmWave)
-    wifi,         // bleeding-edge WiFi 7
-    bluetooth,    // ultra-stable Bluetooth 5.4
-    speaker,      // premium quad-speaker audio hardware
+    ram,          // RAM → type + size (LPDDR5X, 12GB)
+    storage,      // Storage → type + capacity (UFS 4.0, 512GB)
+    battery,      // Battery → capacity + chargingSpeed + type
+    display,      // Display → panelType + refreshRate + resolution + size
+    cameraPreset, // Camera → cameraType + mp + ois
+    network,      // Connectivity configuration blocks
+    wifi,
+    bluetooth,
+    speaker,      // Audio spatial configurations
     dolby,
     hiRes,
-    haptics,      // modern tactile linear vibration
-    thermal,      // vapor chamber to handle sustained heavy loads
-    phoneBuild    // premium business structural aluminum frame
+    haptics,      // Z-Axis Linear Actuator tactile driver
+    thermal,      // High performance vapor chamber layer
+    phoneBuild    // Aluminum structural frame casing
   ] = await Promise.all([
-    RAM.findOne({ size: 12 }),
-    Storage.findOne({ capacity: 512 }),
-    Battery.findOne({ capacity: 6000, chargingSpeed: 67 }),
-    Display.findOne({ refreshRate: 144, panelType: "AMOLED" }),
-    Camera.findOne({ cameraType: "Primary Sensor", mp: 108 }),
+    RAM.findOne({ type: "LPDDR5X", size: 12 }),
+    Storage.findOne({ type: "UFS 4.0", capacity: 512 }),
+    Battery.findOne({ capacity: 6000, chargingSpeed: 67, type: "Li-Ion" }),
+    Display.findOne({ panelType: "AMOLED", refreshRate: 144, resolution: "FHD+", size: 6.8 }),
+    Camera.findOne({ cameraType: "Primary Sensor", mp: 108, ois: "Yes" }),
     Network.findOne({ type: "5G mmWave" }),
     Wifi.findOne({ type: "WiFi 7" }),
     Bluetooth.findOne({ type: "Bluetooth 5.4" }),
@@ -55,7 +55,7 @@ export const standardPowerUsersPreset = async () => {
     PhoneBuild.findOne({ material: "Aluminum Frame" })
   ]);
 
-  // Consolidate properties through configuration adapters
+  // Aggregate composite layouts using factory conversion utilities
   const camera = buildCamera(cameraPreset);
   const connectivity = buildConnectivity(network, wifi, bluetooth);
   const audio = buildAudio(speaker, dolby, hiRes);
